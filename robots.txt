@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sindicatoespejo.com.ec/sitemap.xml

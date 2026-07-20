@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.r-footer-grid>*{min-width:0}
+@media (max-width:760px){
+  .r-footer-grid{grid-template-columns:1fr!important;gap:32px!important}
+}
+</style>
+</helmet>
+<footer style="background:#072716;color:rgba(255,255,255,.75);font-family:'Public Sans',system-ui,sans-serif">
+  <div class="r-footer-grid" style="max-width:1180px;margin:0 auto;padding:56px 24px 30px;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px">
+    <div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <img src="assets/img/logo.jpeg" style="width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(20,129,67,.28)" />
+        <span style="display:flex;flex-direction:column;line-height:1.15"><b style="font:800 15px Archivo,sans-serif;color:#fff">Sindicato de Choferes</b><span style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.6)">Profesionales del Cantón Espejo</span></span>
+      </div>
+      <p style="font-size:14px;line-height:1.6;margin:0 0 18px;max-width:320px">Formando conductores profesionales, seguros y responsables en el Cantón Espejo desde 1979. Aval de la ANT.</p>
+      <div style="display:flex;gap:9px">
+        <sc-for list="{{ socials }}" as="soc" hint-placeholder-count="4">
+          <a href="{{ soc.l }}" style="width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font:700 13px Archivo,sans-serif;color:#fff;text-decoration:none">{{ soc.i }}</a>
+        </sc-for>
+      </div>
+    </div>
+    <div>
+      <div style="font:800 14px Archivo,sans-serif;color:#fff;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px">Enlaces</div>
+      <div style="display:flex;flex-direction:column;gap:11px;font-size:15px">
+        <a href="index.html#nosotros" style="text-decoration:none;color:rgba(255,255,255,.75)">Nosotros</a>
+        <a href="index.html#licencias" style="text-decoration:none;color:rgba(255,255,255,.75)">Licencias</a>
+        <a href="index.html#proceso" style="text-decoration:none;color:rgba(255,255,255,.75)">Proceso de inscripción</a>
+        <a href="index.html#instalaciones" style="text-decoration:none;color:rgba(255,255,255,.75)">Instalaciones</a>
+        <a href="index.html#contacto" style="text-decoration:none;color:rgba(255,255,255,.75)">Contacto</a>
+      </div>
+    </div>
+    <div>
+      <div style="font:800 14px Archivo,sans-serif;color:#fff;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px">Contacto</div>
+      <div style="display:flex;flex-direction:column;gap:11px;font-size:15px">
+        <span>El Ángel, Cantón Espejo — Carchi</span>
+        <span>(06) 297-7420 - 0981907709</span>
+        <span>info@sindicatoespejo.com.ec</span>
+        <span>Lun–Vie 08:00–17:00</span>
+      </div>
+    </div>
+  </div>
+  <div style="border-top:1px solid rgba(255,255,255,.1)">
+    <div style="max-width:1180px;margin:0 auto;padding:20px 24px;font-size:13px;color:rgba(255,255,255,.55);display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center">
+      <span>© {{ year }} Sindicato de Choferes Profesionales del Cantón Espejo. Todos los derechos reservados.</span>
+      <sc-if value="{{ visits }}" hint-placeholder-val="{{ 0 }}">
+        <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);padding:5px 12px;border-radius:20px;font-size:12px;color:rgba(255,255,255,.65)">
+          <span style="color:#ffcf33">●</span> {{ visits }} visitas
+        </span>
+      </sc-if>
+    </div>
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px 16px;text-align:center">
+      <div style="width:100%;height:1px;background:rgba(255,255,255,.08);margin:0 0 14px"></div>
+      <a href="https://jgabriel1194.github.io/" target="_blank" rel="noopener" style="font-size:11px;color:rgba(255,255,255,.3);text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px" onmouseover="this.style.color='rgba(255,255,255,.6)'" onmouseout="this.style.color='rgba(255,255,255,.3)'">Desarrollado por Msc. Gabriel Soto</a>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:320}}">
+class Component extends DCLogic {
+  state = { visits: null };
+
+  componentDidMount(){
+    // Sitio 100% estático: el conteo lo lleva un servicio externo gratuito
+    // (countapi.mileshilliard.com). Si no responde, el contador simplemente no se muestra.
+    // La API usa UNA sola clave plana (sin namespace) y devuelve "value" como texto.
+    fetch('https://countapi.mileshilliard.com/api/v1/hit/sindicatoespejo_com_ec_homepage')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        const n = data ? Number(data.value ?? data.count) : NaN;
+        if(isFinite(n)) this.setState({ visits: n.toLocaleString('es-EC') });
+      })
+      .catch(()=>{});
+  }
+
+  renderVals(){
+    return {
+      socials: [ {i:'f', l:'https://www.facebook.com/SindicatoDeConductoresProfesionalesDeEspejo'}, {i:'tk',l:'https://www.tiktok.com/@sindicato.choferesespejo'}],
+      year: new Date().getFullYear(),
+      visits: this.state.visits,
+    };
+  }
+}
+</script>
+</body>
+</html>
