@@ -739,14 +739,28 @@
     }
   };
   function evalDcLogic(src) {
-    //! nosemgrep: eval-and-function-constructor
-    const fn = new Function(
-      "DCLogic",
-      "StreamableLogic",
-      "React",
-      src + '\n;return (typeof Component!=="undefined"&&Component)||undefined;'
-    );
-    return fn(StreamableLogic, StreamableLogic, getReact());
+    /* Manual CSP patch (support.js has no dc-runtime/ source project on this
+       machine to rebuild from — do not regenerate this function from source
+       without carrying this fix forward). Production hosts here send a CSP
+       with 'unsafe-inline' but no 'unsafe-eval', so new Function()/eval()
+       throw. Running the logic class through a DOM-injected <script> tag
+       instead counts as inline script execution, which the same policy
+       allows. Each call gets its own IIFE scope so repeated top-level
+       `class Component` declarations across components (Root/Nav/Footer)
+       don't collide in the shared document scope. */
+    getReact();
+    window.__dcLogicBase = StreamableLogic;
+    const script = document.createElement("script");
+    script.textContent = "(function(DCLogic, StreamableLogic, React){\ntry {\n" + src + '\nwindow.__dcEvalResult = (typeof Component!=="undefined"&&Component)||undefined;\n} catch (e) {\nwindow.__dcEvalError = e;\n}\n})(window.__dcLogicBase, window.__dcLogicBase, window.React);';
+    document.head.appendChild(script);
+    document.head.removeChild(script);
+    delete window.__dcLogicBase;
+    const err = window.__dcEvalError;
+    const result = window.__dcEvalResult;
+    delete window.__dcEvalError;
+    delete window.__dcEvalResult;
+    if (err) throw err;
+    return result;
   }
 
   // src/component.ts
